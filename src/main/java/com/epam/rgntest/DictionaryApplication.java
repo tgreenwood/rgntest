@@ -4,10 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RgntestApplication {
+public class DictionaryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RgntestApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DictionaryApplication.class, args);
+    }
 
 }
+
+
+

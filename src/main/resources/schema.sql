@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS definition;
+
+CREATE TABLE definition (
+  id INT AUTO_INCREMENT  PRIMARY KEY,
+  term VARCHAR(50) NOT NULL,
+  definition VARCHAR(250) NOT NULL
+);
