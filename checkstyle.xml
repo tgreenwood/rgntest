@@ -352,12 +352,6 @@
     </module>
     <module name="RegexpSingleline">
         <property name="severity" value="error"/>
-        <property name="format" value="\.printStackTrace\(\)|System\.out|System\.err|org\.apache\.commons\.logging\.Log|java\.util\.logging"/>
-        <property name="message" value="use SLF4J for logging"/>
-        <property name="id" value="InvalidLoggingMethod_Error"/>
-    </module>
-    <module name="RegexpSingleline">
-        <property name="severity" value="error"/>
         <property name="format"
                   value="org.springframework.web.util.JavaScriptUtils|org.springframework.web.util.HtmlUtils|org.apache.commons.lang.StringEscapeUtils|org.\apache.\commons.\codec|org\.owasp\.esapi"/>
         <property name="message" value="use EncodingSupport for encoding"/>
