@@ -17,6 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <lombok.version>1.18.8</lombok.version>
+        <jackson.version>2.9.9</jackson.version>
         <hibernate.version>5.4.3.Final</hibernate.version>
         <restassured.version>4.0.0</restassured.version>
         <restassured.xml-path.version>4.0.0</restassured.xml-path.version>
@@ -48,6 +49,13 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.h2database</groupId>

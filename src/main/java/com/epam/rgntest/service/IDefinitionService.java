@@ -3,15 +3,14 @@ package com.epam.rgntest.service;
 import com.epam.rgntest.vo.Definition;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface IDefinitionService {
 
-    Optional<Definition> getById(Long id);
+    Definition getByTerm(String term);
     Collection<Definition> getAll();
-    void deleteById(Long id);
+    void deleteByTerm(String term);
     void deleteAll();
-    Definition update(Long id, Definition definition);
+    Definition update(Definition definition);
     Definition create(Definition definition);
 
 }

@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS definition;
 CREATE TABLE definition (
-  id INT AUTO_INCREMENT  PRIMARY KEY,
-  term VARCHAR(50) NOT NULL,
+  term VARCHAR(50) NOT NULL PRIMARY KEY,
   definition VARCHAR(250) NOT NULL
 );
 
@@ -14,12 +13,11 @@ CREATE TABLE revinfo (
 
 DROP TABLE IF EXISTS definition_aud;
 CREATE TABLE definition_aud (
-    ID INT NOT NULL,
     REV INTEGER NOT NULL,
     REVTYPE TINYINT,
-    term VARCHAR(50),
+    term VARCHAR(50) NOT NULL,
     definition VARCHAR(250),
-    PRIMARY KEY (ID, REV)
+    PRIMARY KEY (term, REV)
 );
 
 ALTER TABLE definition_aud ADD CONSTRAINT definition_aud_revinfo FOREIGN KEY (REV) REFERENCES REVINFO;

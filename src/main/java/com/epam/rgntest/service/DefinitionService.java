@@ -1,12 +1,13 @@
 package com.epam.rgntest.service;
 
+import com.epam.rgntest.cache.SimpleInMemoryCache;
 import com.epam.rgntest.repository.IDefinitionRepository;
 import com.epam.rgntest.vo.Definition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -14,38 +15,50 @@ import java.util.stream.StreamSupport;
 public class DefinitionService implements IDefinitionService {
 
     private IDefinitionRepository definitionRepository;
+    private SimpleInMemoryCache<String, Definition> cache;
 
     @Autowired
     public DefinitionService(IDefinitionRepository definitionRepository) {
         this.definitionRepository = definitionRepository;
+        this.cache = new SimpleInMemoryCache<>();
     }
 
-
-    public Optional<Definition> getById(Long id) {
-        return definitionRepository.findById(id);
+    @Override
+    public Definition getByTerm(String term) {
+        return cache.get(term, () -> definitionRepository.findByTerm(term));
     }
 
+    @Override
     public Collection<Definition> getAll() {
         return StreamSupport.stream(definitionRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // do not support cache yet
     }
 
-    public void deleteById(Long id) {
-        definitionRepository.deleteById(id);
+    @Override
+    public Definition update(Definition definition) {
+        return save(definition);
     }
 
+    @Override
+    public Definition create(Definition definition) {
+        return save(definition);
+    }
+
+    @Override
+    public void deleteByTerm(String term) {
+        definitionRepository.deleteByTerm(term);
+        cache.remove(term);
+    }
+
+    @Override
     public void deleteAll() {
         definitionRepository.deleteAll();
+        cache.clear();
     }
 
-    public Definition update(Long id, Definition definition) {
-        Definition definitionToUpdate = definition.toBuilder()
-                .id(id)
-                .build();
-        return definitionRepository.save(definitionToUpdate);
-    }
-
-    public Definition create(Definition definition) {
-        return definitionRepository.save(definition);
+    private Definition save(Definition definition) {
+        Supplier<Definition> supplier = () -> definitionRepository.save(definition);
+        cache.save(definition.getTerm(), supplier);
+        return cache.get(definition.getTerm(), supplier);
     }
 }

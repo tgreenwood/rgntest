@@ -25,7 +25,7 @@ public class DefinitionITTests {
     }
 
     @Test
-    public void shouldRetrieveOneDefinitionWhenRequestingDefinitionGetEndPointWithId() {
+    public void shouldRetrieveOneDefinitionWhenRequestingDefinitionGetEndPointWithTerm() {
         Assert.assertEquals(0, getAllDefinitionsListSize());
         String generatedTerm = generateTerm();
         String generatedDef = generateDefinition();
@@ -60,7 +60,7 @@ public class DefinitionITTests {
     }
 
     @Test
-    public void shouldDeleteOneDefinitionWhenRequestingDefinitionDeleteEndPointWithId() {
+    public void shouldDeleteOneDefinitionWhenRequestingDefinitionDeleteEndPointWithTerm() {
         final String location = generateAndCreateOne();
         Assert.assertEquals(1, getAllDefinitionsListSize());
 
@@ -73,24 +73,22 @@ public class DefinitionITTests {
     }
 
     @Test
-    public void shouldUpdateDefinitionWhenRequestingDefinitionPutEndPointWithIdAndBody() {
-        final String location = generateAndCreateOne();
+    public void shouldUpdateDefinitionWhenRequestingDefinitionPutEndPointWithBody() {
+        String initialTerm = generateTerm();
+        String initialDef = generateDefinition();
+        final String location = createOne(initialTerm, initialDef);
 
-        String updatedTerm = generateTerm();
         String updatedDef = generateDefinition();
         final String payload = "{\n" +
-                "\t\"id\": 1,\n" +
-                "    \"term\": \"" + updatedTerm + "\",\n" +
+                "    \"term\": \"" + initialTerm + "\",\n" +
                 "    \"definition\": \"" + updatedDef + "\"\n" +
                 "}";
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(payload)
-                .put(location);
+                .put(String.format(DEFINITION_PATH, ""));
 
-        String definition = extractValueTermByIdEqualsTo(location, "definition");
-        String term = extractValueTermByIdEqualsTo(location, "term");
-        Assert.assertEquals(term, updatedTerm);
+        String definition = extractByTermValueEqualsTo(location, "definition");
         Assert.assertEquals(definition, updatedDef);
     }
 
@@ -102,12 +100,12 @@ public class DefinitionITTests {
         String generatedDef = generateDefinition();
         final String location = createOne(generatedTerm, generatedDef);
 
-        Assert.assertEquals(extractValueTermByIdEqualsTo(location, "term"), generatedTerm);
-        Assert.assertEquals(extractValueTermByIdEqualsTo(location, "definition"), generatedDef);
+        Assert.assertEquals(extractByTermValueEqualsTo(location, "term"), generatedTerm);
+        Assert.assertEquals(extractByTermValueEqualsTo(location, "definition"), generatedDef);
     }
 
     @Test
-    public void shouldGetInternalServerErrorWhenRequestingGetByNonExistingId() {
+    public void shouldGetInternalServerErrorWhenRequestingGetByNonExistingTerm() {
         RestAssured.get(String.format(DEFINITION_PATH, Integer.MAX_VALUE))
                 .then()
                 .assertThat()
@@ -115,11 +113,11 @@ public class DefinitionITTests {
     }
 
     @Test
-    public void shouldGetInternalServerErrorWhenRequestingDeleteByNonExistingId() {
-        RestAssured.delete(String.format(DEFINITION_PATH, Integer.MAX_VALUE))
+    public void shouldResponse200WhenRequestingDeleteByNonExistingTerm() {
+        RestAssured.delete(String.format(DEFINITION_PATH, generateTerm()))
                 .then()
                 .assertThat()
-                .statusCode(500);
+                .statusCode(200);
     }
 
 
@@ -130,7 +128,7 @@ public class DefinitionITTests {
                 .size();
     }
 
-    private String extractValueTermByIdEqualsTo(String location, String valueName) {
+    private String extractByTermValueEqualsTo(String location, String valueName) {
         return RestAssured.get(location)
                 .then()
                 .extract()

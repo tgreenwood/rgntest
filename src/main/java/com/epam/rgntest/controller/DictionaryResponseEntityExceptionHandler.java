@@ -13,7 +13,7 @@ public class DictionaryResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(value = Throwable.class) // Throwable for demonstration only
     protected ResponseEntity<Object> handle(RuntimeException ex, WebRequest request) {
-        return handleExceptionInternal(ex, "Something went wrong",
+        return handleExceptionInternal(ex, "Something went wrong, exception message: " + ex.getMessage(),
                 new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

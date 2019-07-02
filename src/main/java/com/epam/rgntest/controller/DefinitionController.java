@@ -5,7 +5,6 @@ import com.epam.rgntest.service.IDefinitionService;
 import com.epam.rgntest.vo.Definition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 
@@ -29,10 +29,11 @@ public class DefinitionController {
         this.definitionService = definitionService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Definition> get(@PathVariable Long id) {
-        return definitionService.getById(id).isPresent()
-                ? ResponseEntity.ok(definitionService.getById(id).get())
+    @GetMapping("/{term}")
+    public ResponseEntity<Definition> get(@PathVariable String term) {
+        Definition definition = definitionService.getByTerm(term);
+        return  definition != null
+                ? ResponseEntity.ok(definition)
                 : ResponseEntity.notFound().build();
     }
 
@@ -41,9 +42,9 @@ public class DefinitionController {
         return ResponseEntity.ok(definitionService.getAll());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        definitionService.deleteById(id);
+    @DeleteMapping("/{term}")
+    public ResponseEntity<?> delete(@PathVariable String term) {
+        definitionService.deleteByTerm(term);
         return ResponseEntity.ok().build();
     }
 
@@ -53,15 +54,14 @@ public class DefinitionController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Definition> update(@PathVariable Long id, @RequestBody Definition definition) {
-        Assert.notNull(id, "The given id must not be null!");
-        return ResponseEntity.ok(definitionService.update(id, definition));
+    @PutMapping
+    public ResponseEntity<Definition> update(@RequestBody @Valid Definition definition) {
+        return ResponseEntity.ok(definitionService.update(definition));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Definition definition) {
+    public ResponseEntity<?> create(@RequestBody @Valid Definition definition) {
         Definition newDefinition = definitionService.create(definition);
-        return ResponseEntity.created(URI.create("/definition/" + newDefinition.getId())).build();
+        return ResponseEntity.created(URI.create("/definition/" + newDefinition.getTerm())).build();
     }
 }

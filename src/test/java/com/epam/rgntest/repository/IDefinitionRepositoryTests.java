@@ -44,12 +44,12 @@ public class IDefinitionRepositoryTests {
     }
 
     @Test
-    public void shouldGetOneRowWhenGetOneById() {
+    public void shouldGetOneRowWhenGetOneByTerm() {
         String generatedTerm = generateTerm();
         String generatedDef = generateDefinition();
         Definition newDefinition = createOne(generatedTerm, generatedDef);
 
-        Definition definition = definitionRepository.findById(newDefinition.getId()).get();
+        Definition definition = definitionRepository.findByTerm(newDefinition.getTerm());
 
         Assert.assertEquals(definition.getTerm(), generatedTerm);
         Assert.assertEquals(definition.getDefinition(), generatedDef);
@@ -59,7 +59,7 @@ public class IDefinitionRepositoryTests {
     public void shouldAddDefinitionWhenCreate() {
         Definition newDefinition = generateAndCreateOne();
 
-        Definition result = definitionRepository.findById(newDefinition.getId()).get();
+        Definition result = definitionRepository.findByTerm(newDefinition.getTerm());
         Assert.assertEquals(newDefinition.getTerm(), result.getTerm());
         Assert.assertEquals(newDefinition.getDefinition(), result.getDefinition());
     }
@@ -69,29 +69,25 @@ public class IDefinitionRepositoryTests {
         Definition initialDefinition = generateAndCreateOne();
 
         final String updatedDef = generateDefinition();
-        final String updatedTerm = generateTerm();
         Definition updatedDefinition = initialDefinition.toBuilder()
-                .term(updatedTerm)
                 .definition(updatedDef)
                 .build();
         definitionRepository.save(updatedDefinition);
 
-        updatedDefinition = definitionRepository.findById(initialDefinition.getId()).get();
-        Assert.assertEquals(updatedTerm, updatedDefinition.getTerm());
+        updatedDefinition = definitionRepository.findByTerm(initialDefinition.getTerm());
         Assert.assertEquals(updatedDef, updatedDefinition.getDefinition());
     }
 
     @Test
-    public void shouldDeleteDefinitionWhenDeleteById() {
+    public void shouldDeleteDefinitionWhenDeleteByTerm() {
         Definition definition = generateAndCreateOne();
         List<Definition> allDefsBeforeDelete = convertIterableToList(definitionRepository.findAll());
 
-
-        definitionRepository.deleteById(definition.getId());
+        definitionRepository.deleteByTerm(definition.getTerm());
 
         List<Definition> allDefsAfterDelete = convertIterableToList(definitionRepository.findAll());
         Assert.assertEquals(allDefsBeforeDelete.size() - 1, allDefsAfterDelete.size());
-        Assert.assertFalse(definitionRepository.findById(definition.getId()).isPresent());
+        Assert.assertNull(definitionRepository.findByTerm(definition.getTerm()));
 
     }
 
