@@ -22,7 +22,7 @@ public class DefinitionService implements IDefinitionService {
     @Autowired
     public DefinitionService(IDefinitionRepository definitionRepository) {
         this.definitionRepository = definitionRepository;
-        this.cache = new SimpleInMemoryCache<>();
+        this.cache = new SimpleInMemoryCache<>(); // cache should leave until the service dies, so strong coupling
     }
 
     @Override
