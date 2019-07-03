@@ -13,7 +13,7 @@ CREATE TABLE revinfo (
 
 DROP TABLE IF EXISTS definition_aud;
 CREATE TABLE definition_aud (
-    REV INTEGER NOT NULL,
+    REV INT NOT NULL,
     REVTYPE TINYINT,
     term VARCHAR(50) NOT NULL,
     definition VARCHAR(250),

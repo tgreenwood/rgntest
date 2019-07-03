@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 @Entity
 @Audited
@@ -19,7 +21,8 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "term")
-public class Definition {
+@ToString
+public class Definition implements Serializable {
 
     @Id
     @NotNull
